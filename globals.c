@@ -30,8 +30,8 @@
 RTC_TimeTypeDef Rtime;
 RTC_DateTypeDef Rdate;
 
-uint8_t EnableAlerts = 1;		/* 1: (default) enable displaying alerts | 0: disable displaying alerts */
-ListStruct* notif_head = NULL;	/* head pointer of notifications list */
+uint8_t EnableAlerts = 1;			/* 1: (default) enable displaying alerts | 0: disable displaying alerts */
+ListStruct* notif_head = NULL;		/* head pointer of notifications list */
 
 char message[MSG_MAX+1];	/* output buffer for communication */
 

@@ -19,9 +19,9 @@
 #define ALERT_TIME		30
 
 /* Defines for Polling */
-#define POLL_REQ	1
-#define POLL_WAIT	2
-#define POLL_RDY	3
+#define POLL_REQ		1
+#define POLL_WAIT		2
+#define POLL_RDY		3
 
 /* Defines for Plugin */
 #define PLUGIN_RS485	1
@@ -138,21 +138,21 @@ void fillSensorData(const char* data);	/* fill the Sensor struct with received d
 uint8_t isValidSensorData(const char* rx, const uint8_t length);	/* check incoming data. return 1: data is valid & usable, 0: corrupted data */
 
 /* Sensors */
-void initSensor(SensorStruct* sensor, char* name, float target);							/* Init Sensor Struct with default values */
-void nameSensor(SensorStruct* sensor, char* name);											/* Set Sensor name */
+void initSensor(SensorStruct* sensor, char* name, float target);		/* Init Sensor Struct with default values */
+void nameSensor(SensorStruct* sensor, char* name);						/* Set Sensor name */
 void setSensor(SensorStruct* sensor, float temp, uint8_t humid, uint16_t co, uint16_t co2);	/* Set Sensor values */
 void setSensorAlert(SensorStruct* sensor, float target, float aTmax, float aTmin, uint8_t aHmax, uint8_t aHmin, uint16_t aCO, uint16_t aCO2);	/* Set Sensor alert values */
-void setSensorCom(SensorStruct* sensor, uint8_t com, char addr_lsb);						/* Set Sensor communication type */
+void setSensorCom(SensorStruct* sensor, uint8_t com, char addr_lsb);	/* Set Sensor communication type */
 
 /* Sensor Alert Functions */
-void checkSensorForAlert(SensorStruct* sensor);			/* check sensor data for alert (it compares values with the previously set limits) */
-void setAlert(SensorStruct* sensor, uint8_t alert);		/* set the proper bit in Sensor:alert variable */
-uint8_t checkAlert(SensorStruct* sensor, uint8_t alert);/* check the proper bit in Sensor:alert variable */
-void clrAlert(SensorStruct* sensor, uint8_t alert);		/* clear the proper bit in Sensor:alert variable */
-void clrAlertAll(SensorStruct* sensor);					/* clear all alert bit in Sensor:alert variable */
-uint8_t isAlert(SensorStruct* sensor);					/* return: 0: no need to display alert screen (either because it was already done or there is no alert | 1: need to display alert */
-void setAlertStateBit(SensorStruct* sensor);			/* set Bit0 in Sensor:alert to 1 */
-void clrAlertStateBit(SensorStruct* sensor);			/* clear Bit0 in Sensor:alert */
+void checkSensorForAlert(SensorStruct* sensor);				/* check sensor data for alert (it compares values with the previously set limits) */
+void setAlert(SensorStruct* sensor, uint8_t alert);			/* set the proper bit in Sensor:alert variable */
+uint8_t checkAlert(SensorStruct* sensor, uint8_t alert);	/* check the proper bit in Sensor:alert variable */
+void clrAlert(SensorStruct* sensor, uint8_t alert);			/* clear the proper bit in Sensor:alert variable */
+void clrAlertAll(SensorStruct* sensor);						/* clear all alert bit in Sensor:alert variable */
+uint8_t isAlert(SensorStruct* sensor);						/* return: 0: no need to display alert screen (either because it was already done or there is no alert | 1: need to display alert */
+void setAlertStateBit(SensorStruct* sensor);				/* set Bit0 in Sensor:alert to 1 */
+void clrAlertStateBit(SensorStruct* sensor);				/* clear Bit0 in Sensor:alert */
 
 /* Notification Messages */
 void addNotif(char* msg);				/* Add new notification to linked list */

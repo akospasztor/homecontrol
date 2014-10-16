@@ -40,9 +40,9 @@ extern RTC_TimeTypeDef Rtime;
 extern RTC_DateTypeDef Rdate;
 
 extern PeriphConnectionStruct 	PeriphConnection;
-extern ModuleBTStruct 			ModuleBT;
+extern ModuleBTStruct			ModuleBT;
 extern ModuleTcpServerStruct	ModuleTcpServer;
-extern ModuleRadioStruct 		ModuleRadio;
+extern ModuleRadioStruct		ModuleRadio;
 extern ModuleKNXStruct			ModuleKNX;
 
 extern ModeStruct Mode;
