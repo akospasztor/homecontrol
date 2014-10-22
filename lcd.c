@@ -1019,6 +1019,10 @@ void lcd_settings_conf(SensorStruct* Sensor)
 				if(Sensor->com != COM_OFF)
 				{
 					Sensor->com = COM_OFF;
+					Sensor->temp = 0.0;
+					Sensor->humid = 0;
+					Sensor->co = 0;
+					Sensor->co2 = 0;
 					Sensor->FLAG_poll = 0;
 					Sensor->errcount = 0;
 					draw_settings_conf_screen(Sensor, &btnHome);
