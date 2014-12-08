@@ -13,11 +13,20 @@
 **/
 
 #include "stm32f4xx.h"
+#include "main.h"
 #include "spi.h"
 
 /*** SPI INIT **********************************************************************/
 void SPI_init(void)
 {	
+    /* FT800 pin configuration
+	 * SCK  = PA5
+	 * MISO = PA6
+	 * MOSI = PB5
+	 * CS   = PA4
+	 * PD   = PE8
+     */
+    
     SPI_InitTypeDef SPI_InitTypeDefStruct;
     GPIO_InitTypeDef GPIO_InitTypeDefStruct;
     
@@ -43,7 +52,6 @@ void SPI_init(void)
     GPIO_InitTypeDefStruct.GPIO_Mode = GPIO_Mode_AF;
     GPIO_InitTypeDefStruct.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitTypeDefStruct.GPIO_OType = GPIO_OType_PP;
-    //GPIO_InitTypeDefStruct.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	GPIO_InitTypeDefStruct.GPIO_PuPd = GPIO_PuPd_UP;
     GPIO_Init(GPIOA, &GPIO_InitTypeDefStruct);
 	
@@ -52,7 +60,6 @@ void SPI_init(void)
     GPIO_InitTypeDefStruct.GPIO_Mode = GPIO_Mode_AF;
     GPIO_InitTypeDefStruct.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitTypeDefStruct.GPIO_OType = GPIO_OType_PP;
-    //GPIO_InitTypeDefStruct.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	GPIO_InitTypeDefStruct.GPIO_PuPd = GPIO_PuPd_UP;
     GPIO_Init(GPIOB, &GPIO_InitTypeDefStruct);
     
@@ -101,40 +108,18 @@ void SPI_speedup(void)
 }
 
 /*** SEND **************************************************************************/
-/*char SPI_send(char data)
-{
-	SPI1->DR = data;                            // write data to be transmitted to the SPI data register
-	while( !(SPI1->SR & SPI_I2S_FLAG_TXE) );    // wait until transmit complete
-	while( !(SPI1->SR & SPI_I2S_FLAG_RXNE) );   // wait until receive complete
-	while( SPI1->SR & SPI_I2S_FLAG_BSY );       // wait until SPI is not busy anymore
-	return SPI1->DR;                            // return received data from SPI data register
-}*/
-
-char SPI_send(/*char address,*/ char data)
-{
-	//GPIO_ResetBits(GPIOE, GPIO_Pin_3);
- 
-    /*while(!SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE)); 
-    SPI_I2S_SendData(SPI1, address);
-    while(!SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE));
-    SPI_I2S_ReceiveData(SPI1);*/
-     
+char SPI_send(char data)
+{    
     while(!SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE)); 
     SPI_I2S_SendData(SPI1, data);
     while(!SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE));
     
     return SPI_I2S_ReceiveData(SPI1);
-     
-    //GPIO_SetBits(GPIOE, GPIO_Pin_3);
 }
 
 /*** REC ***************************************************************************/
 char SPI_rec(char address)
-{ 
-    //GPIO_ResetBits(GPIOE, GPIO_Pin_3); 
-     
-    //address = 0x80 | address;
-     
+{      
     while(!SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE)); 
     SPI_I2S_SendData(SPI1, address);
     while(!SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE));
@@ -144,9 +129,19 @@ char SPI_rec(char address)
     SPI_I2S_SendData(SPI1, 0x00);
     while(!SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE));
      
-    //GPIO_SetBits(GPIOE, GPIO_Pin_3);
-     
     return  SPI_I2S_ReceiveData(SPI1);
+}
+
+/*** FT800 SPI select **************************************************************/
+void FT_spi_select(void)
+{
+    GPIO_ResetBits(GPIOA, GPIO_Pin_4);
+}
+
+/*** FT800 SPI deselect ************************************************************/
+void FT_spi_deselect(void)
+{
+    GPIO_SetBits(GPIOA, GPIO_Pin_4);
 }
 
 

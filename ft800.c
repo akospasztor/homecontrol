@@ -15,7 +15,6 @@
 
 
 #include "stm32f4xx.h"
-#include "main.h"
 #include "spi.h"
 #include "ft800.h"
 
@@ -32,7 +31,7 @@
 */
 void HOST_MEM_READ_STR(uint32_t addr, uint8_t *pnt, uint8_t len)
 {
-  GPIO_ResetBits(LCD_PORT, LCD_CS); 	// Select the FT800 IC
+  FT_spi_select();
   SPI_send(((addr>>16)&0x3F) );			// Send out bits 23:16 of addr, bits 7:6 of this byte must be 00 
   SPI_send(((addr>>8)&0xFF));       	// Send out bits 15:8 of addr
   SPI_send((addr&0xFF));            	// Send out bits 7:0 of addr
@@ -42,7 +41,7 @@ void HOST_MEM_READ_STR(uint32_t addr, uint8_t *pnt, uint8_t len)
   while(len--)                      	// While Len > 0 Read out n bytes
     *pnt++ = SPI_send(0);
   
-  GPIO_SetBits(LCD_PORT, LCD_CS);   	// Deselect FT800 IC
+  FT_spi_deselect();
 }
 
 /*
@@ -55,7 +54,7 @@ void HOST_MEM_READ_STR(uint32_t addr, uint8_t *pnt, uint8_t len)
 */
 void HOST_MEM_WR_STR(uint32_t addr, uint8_t *pnt, uint8_t len)
 {
-  GPIO_ResetBits(LCD_PORT, LCD_CS);		// Select the FT800 IC
+  FT_spi_select();
   SPI_send(((addr>>16)&0x3F)|0x80);     // Send out 23:16 of addr, bits 7:6 of this byte must be 10
   SPI_send(((addr>>8)&0xFF));           // Send out bits 15:8 of addr
   SPI_send((addr&0xFF));                // Send out bits 7:0 of addr
@@ -63,7 +62,7 @@ void HOST_MEM_WR_STR(uint32_t addr, uint8_t *pnt, uint8_t len)
   while(len--)                          // While Len > 0 Write *pnt (then increment pnt)
     SPI_send(*pnt++);
   
-  GPIO_SetBits(LCD_PORT, LCD_CS);       // Deselect FT800 IC
+  FT_spi_deselect();
 }
 
 /*
@@ -74,20 +73,20 @@ void HOST_MEM_WR_STR(uint32_t addr, uint8_t *pnt, uint8_t len)
 */
 void HOST_CMD_WRITE(uint8_t CMD)
 {
-  GPIO_ResetBits(LCD_PORT, LCD_CS);		// Select FT800 IC
+  FT_spi_select();
   SPI_send((uint8_t)(CMD|0x40));        // Send out Command, bits 7:6 must be 01
-  SPI_send(0x00);                       // Send out Zero
-  SPI_send(0x00);                       // Send out Zero
-  GPIO_SetBits(LCD_PORT, LCD_CS);       // Deselect FT800 IC
+  SPI_send(0x00);
+  SPI_send(0x00);
+  FT_spi_deselect();
 }
 
 void HOST_CMD_ACTIVE(void)
 {
-  GPIO_ResetBits(LCD_PORT, LCD_CS);
+  FT_spi_select();
   SPI_send(0x00);      
   SPI_send(0x00);
   SPI_send(0x00);
-  GPIO_SetBits(LCD_PORT, LCD_CS);
+  FT_spi_deselect();
 }
 
 /*
@@ -99,14 +98,14 @@ void HOST_CMD_ACTIVE(void)
 */
 void HOST_MEM_WR8(uint32_t addr, uint8_t data)
 {
-  GPIO_ResetBits(LCD_PORT, LCD_CS);
+  FT_spi_select();
   SPI_send((addr>>16)|0x80);
   SPI_send(((addr>>8)&0xFF));
   SPI_send((addr&0xFF));
 
   SPI_send(data);
   
-  GPIO_SetBits(LCD_PORT, LCD_CS);  
+  FT_spi_deselect();  
 }
 
 /*
@@ -118,7 +117,7 @@ void HOST_MEM_WR8(uint32_t addr, uint8_t data)
 */
 void HOST_MEM_WR16(uint32_t addr, uint32_t data)
 {
-  GPIO_ResetBits(LCD_PORT, LCD_CS);
+  FT_spi_select();
   SPI_send((addr>>16)|0x80);
   SPI_send(((addr>>8)&0xFF));
   SPI_send((addr&0xFF));
@@ -127,7 +126,7 @@ void HOST_MEM_WR16(uint32_t addr, uint32_t data)
   SPI_send( (uint8_t)((data&0xFF)) );    //byte 0
   SPI_send( (uint8_t)((data>>8)) );      //byte 1
   
-  GPIO_SetBits(LCD_PORT, LCD_CS);  
+  FT_spi_deselect();  
 }
 
 /*
@@ -139,7 +138,7 @@ void HOST_MEM_WR16(uint32_t addr, uint32_t data)
 */
 void HOST_MEM_WR32(uint32_t addr, uint32_t data)
 {
-  GPIO_ResetBits(LCD_PORT, LCD_CS);
+  FT_spi_select();
   SPI_send((addr>>16)|0x80);
   SPI_send(((addr>>8)&0xFF));
   SPI_send((addr&0xFF));
@@ -149,7 +148,7 @@ void HOST_MEM_WR32(uint32_t addr, uint32_t data)
   SPI_send( (uint8_t)((data>>16)&0xFF) );
   SPI_send( (uint8_t)((data>>24)&0xFF) );
   
-  GPIO_SetBits(LCD_PORT, LCD_CS);  
+  FT_spi_deselect();  
 }
 
 /*
@@ -162,7 +161,7 @@ uint8_t HOST_MEM_RD8(uint32_t addr)
 {
   uint8_t data_in;
 
-  GPIO_ResetBits(LCD_PORT, LCD_CS);
+  FT_spi_select();
   SPI_send((uint8_t)((addr>>16)&0x3F));
   SPI_send((uint8_t)((addr>>8)&0xFF));
   SPI_send((uint8_t)(addr));
@@ -170,7 +169,7 @@ uint8_t HOST_MEM_RD8(uint32_t addr)
 
   data_in = SPI_send(0);
   
-  GPIO_SetBits(LCD_PORT, LCD_CS);
+  FT_spi_deselect();
   return data_in;
 }
 
@@ -186,7 +185,7 @@ uint32_t HOST_MEM_RD16(uint32_t addr)
   uint32_t data = 0;
   uint8_t i;
 
-  GPIO_ResetBits(LCD_PORT, LCD_CS);
+  FT_spi_select();
   SPI_send(((addr>>16)&0x3F));
   SPI_send(((addr>>8)&0xFF));
   SPI_send((addr&0xFF));
@@ -198,7 +197,7 @@ uint32_t HOST_MEM_RD16(uint32_t addr)
     data |= ( ((uint32_t)data_in) << (8*i) );
   }
   
-  GPIO_SetBits(LCD_PORT, LCD_CS);
+  FT_spi_deselect();
   return data;
 }
 
@@ -214,7 +213,7 @@ uint32_t HOST_MEM_RD32(uint32_t addr)
   uint32_t data = 0;
   uint8_t i;
 
-  GPIO_ResetBits(LCD_PORT, LCD_CS);
+  FT_spi_select();
   SPI_send(((addr>>16)&0x3F));
   SPI_send(((addr>>8)&0xFF));
   SPI_send((addr&0xFF));
@@ -226,8 +225,7 @@ uint32_t HOST_MEM_RD32(uint32_t addr)
     data |= ( ((uint32_t)data_in) << (8*i) );
   }
   
-  GPIO_SetBits(LCD_PORT, LCD_CS);
-
+  FT_spi_deselect();
   return data;
 }
 

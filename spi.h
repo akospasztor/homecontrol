@@ -1,12 +1,21 @@
 #ifndef SPI_H
 #define SPI_H
 
-/* FT800 */
+/* FT800 GPIOs */
+#define LCD_PORT        GPIOA
+#define LCD_PORT_PD     GPIOE
+
+#define LCD_PDN         GPIO_Pin_8
+#define LCD_CS          GPIO_Pin_4
+
+/* FT800 functions */
 void SPI_init(void);			/* SPI1 init for FT800 */
 void SPI_speedup(void);			/* Speed Up SPI1 */
-
 char SPI_send(char data);		/* Send char to SPI1 */
 char SPI_rec(char address);		/* Receive char from SPI1 */
+
+void FT_spi_select(void);		/* Select FT800 */
+void FT_spi_deselect(void);		/* Deselect FT800 */
 
 /* RFM73P */
 void RF_spi_init(unsigned int prescaler);		/* SPI2 init & RFM73P GPIOs	 	*/

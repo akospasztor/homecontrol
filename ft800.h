@@ -1,13 +1,6 @@
 #ifndef _FT800_H_
 #define _FT800_H_
 
-/* FT800 GPIOs */
-#define LCD_PORT        GPIOA
-#define LCD_PORT_PD     GPIOE
-#define LCD_PORT_CLOCK  RCC_AHB1Periph_GPIOA
-#define LCD_PDN         GPIO_Pin_8
-#define LCD_CS          GPIO_Pin_4
-
 /* FT800 Power Modes */
 #define CMD_ACTIVE  0x00
 #define CMD_STANDBY 0x41

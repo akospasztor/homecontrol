@@ -155,6 +155,10 @@ void processTasks(void)
 			break;
 			
 			case COM_TP:
+				txEN485();
+				KNX_send_str(message);
+				sysDms(5);
+				rxEN485();
 			break;
 		}
 		Sensor2.FLAG_poll = POLL_WAIT;
@@ -175,6 +179,10 @@ void processTasks(void)
 			break;
 			
 			case COM_TP:
+				txEN485();
+				KNX_send_str(message);
+				sysDms(5);
+				rxEN485();
 			break;
 		}
 		Sensor3.FLAG_poll = POLL_WAIT;
